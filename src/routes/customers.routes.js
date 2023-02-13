@@ -4,6 +4,7 @@ import { validSchemaCustomer } from '../middlewares/customers.middleware.js'
 
 const customerRouter = Router()
 
+customerRouter.get('/customers', getAll)
 customerRouter.post('/customers', validSchemaCustomer, create)
 
 export default customerRouter
