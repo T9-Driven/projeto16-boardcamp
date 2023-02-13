@@ -37,3 +37,17 @@ export async function create(req, res) {
     res.status(500).send(error.message)
   }
 }
+
+export async function update(req, res) {
+  const { name, phone, cpf, birthday, id } = res.locals.customer
+
+  try {
+    await db.query(`
+    UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5;
+    `, [name, phone, cpf, birthday, id])
+
+    res.sendStatus(200)
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+}

@@ -3,6 +3,7 @@ import { createCustomerSchema } from '../schemas/customers.schema.js'
 
 export async function validSchemaCustomer(req, res, next) {
   const customer = req.body
+  const { id } = req.params
 
   const { error } = createCustomerSchema.validate(customer)
 
@@ -14,12 +15,13 @@ export async function validSchemaCustomer(req, res, next) {
   const cpfExists = await db.query('SELECT * FROM customers WHERE cpf=$1', [customer.cpf])
 
   if (
-    cpfExists.rowCount !== 0
+    cpfExists.rowCount !== 0 &&
+    cpfExists.rows[0].id !== Number(id)
   ) {
     return res.sendStatus(409)
   }
 
-  res.locals.customer = customer
+  res.locals.customer = id ? { ...customer, id } : customer
 
   next()
 }
