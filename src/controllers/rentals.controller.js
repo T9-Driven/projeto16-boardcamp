@@ -72,7 +72,7 @@ export async function finish(req, res) {
 export async function destroy(req, res) {
   const { id } = req.params
   try {
-    const { rows, rowCount } = await db.query('SELECT * FROM rentals WHERE id=$id', [id])
+    const { rows, rowCount } = await db.query('SELECT * FROM rentals WHERE id=$1', [id])
 
     if (rowCount === 0) return res.sendStatus(404)
     if (!rows[0].returnDate) return res.sendStatus(400)
