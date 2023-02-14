@@ -50,3 +50,38 @@ export async function create(req, res) {
     res.status(500).send(error.message)
   }
 }
+
+export async function finish(req, res) {
+  const { returnDate, delayFee, id } = res.locals.rental
+
+  await db.query(
+    `
+    UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3
+    `,
+    [returnDate, delayFee, id])
+
+  res.sendStatus(200)
+
+  try {
+
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+}
+
+export async function destroy(req, res) {
+  const { id } = req.params
+  try {
+    const { rows, rowCount } = await db.query('SELECT * FROM rentals WHERE id=$id', [id])
+
+    if (rowCount === 0) return res.sendStatus(404)
+    if (!rows[0].returnDate) return res.sendStatus(400)
+
+    await db.query("DELETE FROM rentals WHERE id=$1", [id])
+
+    res.sendStatus(200)
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+
+}
